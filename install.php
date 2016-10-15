@@ -4,8 +4,8 @@
 
 $DELETEEXISTENTWBHOOK = false;
 $REGISTERWEBHOOK = true;
-$WEBHOOKURL = "https://www.yourwebsite.org/webhook.php";
-$SSLCERTIFICATEFILENAME = "certificate.pem";
+$WEBHOOKURL = "https://www.gkrgedongmobile.com/telegram/v2/inline.php";
+$SSLCERTIFICATEFILENAME = "gkrgedongmobile.pem";
 
 $SETUPDB = true;
 $SETUPDBQUERIES = [

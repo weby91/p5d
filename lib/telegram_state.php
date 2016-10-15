@@ -18,7 +18,7 @@ class telegram_state {
 		if($this->getstate() == null) $q = "INSERT INTO States(bot, chat, state) VALUES('".$this->botname."', '".$this->chat."', '$state');";
 		db_nonquery($q);
 	}
-	private function getstate() {
+	public function getstate() {
 		global $STATES_ENABLED;
 		if(!$STATES_ENABLED) return null;
 		if($this->chat == null) return; // exception here

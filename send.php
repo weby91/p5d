@@ -9,9 +9,9 @@
 require("lib/telegram.php");
 
 // if already configured on config.php file, delete/comment following lines
-$TELEGRAM_BOTNAME = "samplebot";
-$TELEGRAM_TOKEN = "...";
-$STATUS_ENABLE = false;
+// $TELEGRAM_BOTNAME = "samplebot";
+// $TELEGRAM_TOKEN = "...";
+// $STATUS_ENABLE = false;
 
 // enable broadcast messages? set to false on non performant hosts
 $BROADCASTS_ALLOWED = false;

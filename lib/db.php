@@ -2,14 +2,14 @@
 function db_connect() {
 	global $DB_PORT, $DB_HOST, $DB_USER, $DB_PWD, $DB_NAME, $DB_USEOLDLIB;
 	$conn = null;
-	if($DB_USEOLDLIB) $conn = mysql_connect("$DB_HOST:$DB_PORT", $DB_USER, $DB_PWD);
+	if($DB_USEOLDLIB) $conn = mysqli_connect("$DB_HOST", $DB_USER, $DB_PWD);
 	else $conn = mysqli_connect($DB_HOST, $DB_USER, $DB_PWD, $DB_NAME);
 	return $conn;
 }
 
 function db_close($conn) {
 	global $DB_USEOLDLIB;
-	if($DB_USEOLDLIB) mysql_close($conn);
+	if($DB_USEOLDLIB) mysqli_close($conn);
 	else mysqli_close($conn);
 }
 
@@ -19,8 +19,8 @@ function db_nonquery($q) {
 	$conn = db_connect();
 	if(!$conn) return false;
 	if($DB_USEOLDLIB) {
-		mysql_select_db($DB_NAME);
-		$retval = mysql_query($q, $conn);
+		mysqli_select_db($conn,$DB_NAME);
+		$retval = mysqli_query($conn,$q);
 	}
 	else {
 		$retval = $conn->query($q);
@@ -35,8 +35,8 @@ function db_query($q) {
 	$conn = db_connect();
 	if(!$conn) return false;
 	if($DB_USEOLDLIB) {
-		mysql_select_db($DB_NAME);
-		$retval = mysql_query($q, $conn);
+		mysqli_select_db($conn,$DB_NAME);
+		$retval = mysqli_query($conn,$q);
 	}
 	else {
 		$retval = $conn->query($q);
@@ -44,8 +44,8 @@ function db_query($q) {
 	if(!$retval) return false;
 	$res = array(); // this may not be needed, since $retval already is an array
 	$row = null;
-	if($DB_USEOLDLIB) while($row = mysql_fetch_array($retval, MYSQL_ASSOC)) array_push($res, $row);
-	else while($row = mysqli_fetch_array($retval, MYSQL_ASSOC)) array_push($res, $row);
+	if($DB_USEOLDLIB) while($row = mysqli_fetch_array($retval, MYSQLI_ASSOC)) array_push($res, $row);
+	else while($row = mysqli_fetch_array($retval, mysqli_ASSOC)) array_push($res, $row);
 	db_close($conn);
 	return $res;
 }
