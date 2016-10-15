@@ -56,13 +56,18 @@ function trigger_play($p) {
 		// $answer = "Write your message and press enter...";
 		require("lib/message_content.php");
 		$state = $p->state()->getstate();
-		if($state == "in_chat")
-		{
-			$answer = "<b>" . $first_name . ' ' . $last_name . "</b> ingin memulai permainan. Dibutuhkan 2 orang lagi untuk dapat memulai permainan.";
-			$p->state()->movetostate("waiting_for_input"); // moving to state "waiting_for_input"
-			$p->bot()->send_message($p->chatid(), $answer);
+		if($chat_type == "group"){
+			if($state == "in_chat")
+			{
+				$answer = "<b>" . $first_name . ' ' . $last_name . "</b> ingin memulai permainan. Dibutuhkan 2 orang lagi untuk dapat memulai permainan.";
+				$p->state()->movetostate("waiting_for_input"); // moving to state "waiting_for_input"
+				$p->bot()->send_message($p->chatid(), $answer);
+			}
+		}else{
+			$answer = "Maaf, permainan hanya dapat dilakukan di dalam group, invite terlebih dahulu bot ini ke dalam group agar dapat memainkannya.";
 		}
-		return logarray('text', $answer);
+		
+		// return logarray('text', $answer);
 	}
 	catch(Exception $e) { return false; } // you can also return what you prefer
 }
@@ -140,7 +145,7 @@ if(!is_null($text) && !is_null($chatid)){
 	$ts->register_trigger_text_command("trigger_help", ["/help"], 0); // state parameter is ignored
 	// $ts->register_trigger_text_command("trigger_play", ["/play"], 0); // state parameter is ignored
 	
-	$ts->register_trigger_text_command("trigger_play", ["/play"], "in_chat"); // /write command is accepted only when state is "in_chat"
+	$ts->register_trigger_text_command("trigger_play", ["/play@pancasila5dbot"], "in_chat"); // /write command is accepted only when state is "in_chat"
 	$ts->register_trigger_any("trigger_input", "waiting_for_input"); // each input retrieved will trigger the trigger_input function when state is "waiting_for_input"
 	$ts->register_trigger_any("trigger_input", "waiting_for_number"); // each input retrieved will trigger the trigger_input function when state is "waiting_for_input"
 	// // error trigger

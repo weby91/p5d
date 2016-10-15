@@ -14,8 +14,15 @@ class telegram_state {
 		global $STATES_ENABLED;
 		if(!$STATES_ENABLED) return;
 		if($this->chat == null) return;
-		$q = "UPDATE States set state='$state' WHERE bot='".$this->botname."' AND chat='".$this->chat."';";
-		if($this->getstate() == null) $q = "INSERT INTO States(bot, chat, state) VALUES('".$this->botname."', '".$this->chat."', '$state');";
+		$check_if_exist = "SELECT chat_id FROM States WHERE bot='".$this->botname."' AND chat_id='".$this->chat."' AND state = 'done';";
+		$s = db_query($check_if_exist);
+		if(count($s)<=0) {
+			// if($this->getstate() == null) $q = "INSERT INTO States(bot, chat_id, state, created_date, group_id) VALUES('".$this->botname."', '".$this->chat."', '$state', NOW());";
+			$q = "INSERT INTO States(bot, chat_id, state, created_date, group_id) VALUES('".$this->botname."', '".$this->chat."', '$state', NOW());";
+		}else{
+			$q = "UPDATE States set state='$state', modified_date = NOW() WHERE bot='".$this->botname."' AND chat_id='".$this->chat."';";
+		}		
+		// if($this->getstate() == null) $q = "INSERT INTO States(bot, chat_id, state, created_date, group_id) VALUES('".$this->botname."', '".$this->chat."', '$state', NOW());";
 		db_nonquery($q);
 	}
 	public function getstate() {
