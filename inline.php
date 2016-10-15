@@ -56,11 +56,12 @@ function trigger_play($p) {
 		// $answer = "Write your message and press enter...";
 		require("lib/message_content.php");
 		$state = $p->state()->getstate();
-		
-			$answer = "<b>" . $first_name . ' ' . $last_name . "</b> ingin '$state' permainan. Dibutuhkan 2 orang lagi untuk dapat memulai permainan.";
+		if($state == "in_chat")
+		{
+			$answer = "<b>" . $first_name . ' ' . $last_name . "</b> ingin memulai permainan. Dibutuhkan 2 orang lagi untuk dapat memulai permainan.";
 			$p->state()->movetostate("waiting_for_input"); // moving to state "waiting_for_input"
 			$p->bot()->send_message($p->chatid(), $answer);
-		
+		}
 		return logarray('text', $answer);
 	}
 	catch(Exception $e) { return false; } // you can also return what you prefer
