@@ -57,7 +57,7 @@ function trigger_play($p) {
 		require("lib/message_content.php");
 		$state = $p->state()->getstate();
 		
-			$answer = "<b>" . $first_name . ' ' . $last_name . "</b> ingin yes permainan. Dibutuhkan 2 orang lagi untuk dapat memulai permainan.";
+			$answer = "<b>" . $first_name . ' ' . $last_name . "</b> ingin '$state' permainan. Dibutuhkan 2 orang lagi untuk dapat memulai permainan.";
 			$p->state()->movetostate("waiting_for_input"); // moving to state "waiting_for_input"
 			$p->bot()->send_message($p->chatid(), $answer);
 		
