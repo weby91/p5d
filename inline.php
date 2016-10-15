@@ -60,12 +60,12 @@ function trigger_play($p) {
 			if($state == "in_chat")
 			{
 				$answer = "<b>" . $first_name . ' ' . $last_name . "</b> ingin memulai permainan. Dibutuhkan 2 orang lagi untuk dapat memulai permainan.";
-				$p->state()->movetostate("waiting_for_input"); // moving to state "waiting_for_input"
-				$p->bot()->send_message($p->chatid(), $answer);
+				$p->state()->movetostate("waiting_for_input"); // moving to state "waiting_for_input"				
 			}
 		}else{
 			$answer = "Maaf, permainan hanya dapat dilakukan di dalam group, invite terlebih dahulu bot ini ke dalam group agar dapat memainkannya.";
 		}
+		$p->bot()->send_message($p->chatid(), $answer);
 		
 		// return logarray('text', $answer);
 	}
