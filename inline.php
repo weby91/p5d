@@ -78,7 +78,8 @@ function trigger_input($p) {
 			if(strtolower($text) === "/play@pancasila5dbot")
 			{		
 				$answer = "Silahkan masukkan <b>minimum huruf</b> yang diinginkan dalam bentuk angka";
-				$p->state()->movetostate("waiting_for_number"); // moving to state "in_chat"
+				$answer = "".print_r($p->message(), true);
+				// $p->state()->movetostate("waiting_for_number"); // moving to state "in_chat"
 			}else if(strtolower($text) === "/cancel@pancasila5dbot"){
 				$answer = "Permainan telah dibatalkan.";
 				$p->state()->movetostate("in_chat"); // moving to state "in_chat"
