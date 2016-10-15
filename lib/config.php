@@ -7,7 +7,7 @@ $TELEGRAM_TOKEN="230102744:AAF446Qr-lVdMPY5h_XburwAPldKTheFE2A";
 $DB_PORT=3306;
 $DB_HOST='localhost';
 $DB_USER='root';
-$DB_PWD='jameslebron2';
+$DB_PWD='';
 $DB_NAME='gkrgedon_telegram';
 
 // database PHP libraries configuration: if true, MySQL library (deprecated) is used; if false, mysqli library is used
