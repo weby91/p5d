@@ -29,6 +29,22 @@ function db_nonquery($q) {
 	return $retval;
 }
 
+function db_custom_nonquery($q) {
+	global $DB_NAME, $DB_USEOLDLIB;
+	$conn = db_connect();
+	if(!$conn) return false;
+	if($DB_USEOLDLIB) {
+		mysqli_select_db($conn,$DB_NAME);
+		$retval = mysqli_query($conn,$q);		
+	}
+	else {
+		$retval = $conn->query($q);
+	}	
+	$retval = mysqli_insert_id($conn);
+	db_close($conn);
+	return $retval;
+}
+
 // db_connect() and db_close() executions are implicitly accomplished inside of this function
 function db_query($q) {
 	global $DB_NAME, $DB_USEOLDLIB;

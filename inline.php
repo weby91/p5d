@@ -48,7 +48,8 @@ function trigger_err($p) {
         // $p->bot()->send_message($p->chatid(), $answer);
         // $response = logarray('WEDEWW', $answer);
     // }
-    return $response;
+    // return $response;
+	return;
 }
 
 function trigger_play($p) {
@@ -56,11 +57,14 @@ function trigger_play($p) {
 		// $answer = "Write your message and press enter...";
 		require("lib/message_content.php");
 		$state = $p->state()->getstate();
+		$answer = ""; 
+		$answer = print_r($state, true);
 		if($chat_type == "group"){
-			if($state == "in_chat")
+			if($state == null)
 			{
-				$answer = "<b>" . $first_name . ' ' . $last_name . "</b> ingin memulai permainan. Dibutuhkan 2 orang lagi untuk dapat memulai permainan.";
-				$p->state()->movetostate("waiting_for_input"); // moving to state "waiting_for_input"				
+				$answer = "<b>" . $first_name . ' ' . $last_name . "</b> ingin memulai permainan. Dibutuhkan minimal 4 player untuk dapat memulai permainan. " . PHP_EOL .
+						  "Untuk bergabung di dalam game ini dapat menuliskan /play@pancasila5dbot";
+				$p->state()->movetostate("waiting_for_player", $p); // moving to state "waiting_for_player"				
 			}
 		}else{
 			$answer = "Maaf, permainan hanya dapat dilakukan di dalam group, invite terlebih dahulu bot ini ke dalam group agar dapat memainkannya.";
@@ -78,25 +82,44 @@ function trigger_input($p) {
 		require("lib/message_content.php");
 		
 		$state = $p->state()->getstate();
-		if($state == "waiting_for_input")
+		$answer = "";
+		if($state == "waiting_for_player")
 		{	
 			if(strtolower($text) === "/play@pancasila5dbot")
 			{		
-				$answer = "Silahkan masukkan <b>minimum huruf</b> yang diinginkan dalam bentuk angka";
-				$answer = "".print_r($p->message(), true);
+				$check_room = $p->state()->check_room($from_id, $p);
+				// $answer = "".print_r($check_player, true);
+				if(!$check_room == null && !$check_room == 2){
+					$answer = "<b>" . $first_name . ' ' . $last_name . "</b> ingin bergabung. Dibutuhkan minimal 4 player untuk dapat memulai permainan." . PHP_EOL .
+							  "(Total Player : " . $check_room . ")";
+				}else if($check_room == 2){
+					$get_host = $p->state()->get_host($p);
+					
+					$host_first_name = $get_host[0]['first_name'];
+					$host_last_name = $get_host[0]['last_name'];
+					$host_id = $get_host[0]['host_id'];
+					
+					$p->state()->movetostate("waiting_for_number", $p);
+					$answer = "<b>" . $first_name . ' ' . $last_name . "</b> ingin bergabung." . PHP_EOL .
+							  "Permainan sudah dapat dimulai, namun sebelumnya silahkan memasukkan minimum huruf yang ingin dimainkan (dalam bentuk angka)." . PHP_EOL .
+							  "Hanya <b>" . $host_first_name . ' ' . $host_last_name . "</b> yang dapat melakukan input." . PHP_EOL .
+							  "(Total Player : " . $check_room . ")";
+				}
+				
+				// $answer = "".print_r($p->message(), true);
 				// $p->state()->movetostate("waiting_for_number"); // moving to state "in_chat"
 			}else if(strtolower($text) === "/cancel@pancasila5dbot"){
 				$answer = "Permainan telah dibatalkan.";
-				$p->state()->movetostate("in_chat"); // moving to state "in_chat"
+				$p->state()->movetostate("canceled", $p); // moving to state "in_chat"
 			}
 		}
 		else if($state == "waiting_for_number")
 		{
 			if(is_numeric($text)){
-				if($text < 3) $answer = "Angka minimum adalah <b>2</b>. Silahkan masukkan angka lebih besar dari 2";
+				if($text < 3) $answer = "Angka minimum yang dapat dipilih adalah <b>2</b>. Silahkan masukkan angka lebih besar dari 2";
 				else {
 					$answer = "Minimum angka yang telah dipilih yaitu " . $text . PHP_EOL . "<b>Permainan dimulai!</b>";
-					$p->state()->movetostate("playing");
+					$p->state()->movetostate("playing", $p);
 				}
 			}else{
 				$answer = "Silahkan masukkan dalam bentuk angka";
@@ -145,9 +168,10 @@ if(!is_null($text) && !is_null($chatid)){
 	$ts->register_trigger_text_command("trigger_help", ["/help"], 0); // state parameter is ignored
 	// $ts->register_trigger_text_command("trigger_play", ["/play"], 0); // state parameter is ignored
 	
-	$ts->register_trigger_text_command("trigger_play", ["/play@pancasila5dbot"], "in_chat"); // /write command is accepted only when state is "in_chat"
+	$ts->register_trigger_text_command("trigger_play", ["/play@pancasila5dbot","/play" ], "in_chat"); // /write command is accepted only when state is "in_chat"
 	$ts->register_trigger_any("trigger_input", "waiting_for_input"); // each input retrieved will trigger the trigger_input function when state is "waiting_for_input"
 	$ts->register_trigger_any("trigger_input", "waiting_for_number"); // each input retrieved will trigger the trigger_input function when state is "waiting_for_input"
+	$ts->register_trigger_any("trigger_input", "waiting_for_player"); // each input retrieved will trigger the trigger_input function when state is "waiting_for_input"
 	// // error trigger
 	$ts->register_trigger_error("trigger_err"); // state parameter is ignored
 
