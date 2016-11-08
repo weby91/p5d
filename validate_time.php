@@ -1,6 +1,6 @@
 <?php
 
-print gearman_version() . "\n";
+echo gearman_version() . "\n";
 
 # Create our worker object.
 $gmworker= new GearmanWorker();
