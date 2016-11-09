@@ -2,7 +2,7 @@
 
 $client= new GearmanClient();
 
-$client->addServer(‘127.0.0.1’);
+$client->addServer('127.0.0.1');
 
 $client->setCreatedCallback("create_change");
 
