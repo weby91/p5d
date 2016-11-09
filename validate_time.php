@@ -1,14 +1,58 @@
 <?php
 
-$worker= new GearmanWorker();
-$worker->addServer('127.0.0.1');
-$worker->addFunction("reverse", "my_reverse_function");
-while ($worker->work());
+$client= new GearmanClient();
 
-function my_reverse_function($job)
+$client->addServer(‘127.0.0.1’);
+
+$client->setCreatedCallback("create_change");
+
+$client->setDataCallback("data_change");
+
+$client->setStatusCallback("status_change");
+
+$client->setCompleteCallback("complete_change");
+
+$client->setFailCallback("fail_change");
+
+$data_array =array('mydata'=>’task’);
+
+$task= $client->addTask("reverse", "mydata", $data_array);
+
+$task2= $client->addTaskLow("reverse", "task", NULL);
+
+echo "DONE\n";
+
+function create_change($task)
 {
-  return strrev($job->workload());
+    echo "CREATED: " . $task->jobHandle() . "\n";
 }
+
+function status_change($task)
+{
+    echo "STATUS: " . $task->jobHandle() . " - " . $task->taskNumerator() . 
+         "/" . $task->taskDenominator() . "\n";
+}
+
+function complete_change($task)
+{
+    echo "COMPLETE: " . $task->jobHandle() . ", " . $task->data() . "\n";
+}
+
+function fail_change($task)
+{
+    echo "FAILED: " . $task->jobHandle() . "\n";
+}
+
+function data_change($task)
+{
+    echo "DATA: " . $task->data() . "\n";
+}
+Function Client_error()
+{
+if (! $client->runTasks())
+    return $client->error() ;
+}
+
 
 // $url = 'https://api.telegram.org/bot230102744:AAF446Qr-lVdMPY5h_XburwAPldKTheFE2A/sendMessage';
 
